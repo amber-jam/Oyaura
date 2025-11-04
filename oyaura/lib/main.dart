@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Oyaura());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Oyaura extends StatelessWidget {
+  const Oyaura({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
+      create: (context) => OyauraState(),
       child: MaterialApp(
         title: 'Namer App',
         theme: ThemeData(
@@ -24,14 +24,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppState extends ChangeNotifier {
+class OyauraState extends ChangeNotifier {
   var current = WordPair.random();
 }
 
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<MyAppState>();
+    var appState = context.watch<OyauraState>();
 
     return Scaffold(
       body: Column(
