@@ -1,52 +1,27 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'screens/startup_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
-  runApp(Oyaura());
+  runApp(OyauraApp());
 }
 
-class Oyaura extends StatelessWidget {
-  const Oyaura({super.key});
-
+class OyauraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => OyauraState(),
-      child: MaterialApp(
-        title: 'Namer App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        ),
-        home: MyHomePage(),
+    return MaterialApp(
+      title: 'Oyaura Wellness',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        useMaterial3: true,
       ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => StartupScreen(),
+        '/home': (context) => HomeScreen(),
+      },
     );
   }
 }
 
-class OyauraState extends ChangeNotifier {
-  var current = WordPair.random();
-}
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    var appState = context.watch<OyauraState>();
-
-    return Scaffold(
-      body: Column(
-        children: [
-          Text('AYEEEE DOWNLOAD OYAURA'), 
-          Text(appState.current.asLowerCase),
-        
-          ElevatedButton(
-              onPressed: () {
-                print('button pressed!');
-              },
-              child: Text('Next'),
-            ),
-        ],
-      ),
-    );
-  }
-}
