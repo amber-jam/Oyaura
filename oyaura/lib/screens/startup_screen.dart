@@ -3,10 +3,10 @@ import '../widgets/logo_widget.dart';
 
 class StartupScreen extends StatefulWidget {
   @override
-  _StartupScreenState createState() => _StartupScreenState();
+  StartupScreenState createState() => StartupScreenState();
 }
 
-class _StartupScreenState extends State<StartupScreen> with SingleTickerProviderStateMixin {
+class StartupScreenState extends State<StartupScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
