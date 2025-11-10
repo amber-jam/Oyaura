@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../widgets/custom_bottom_nav.dart';
 
 class MoodEntry {
   final String emoji;
@@ -91,6 +92,7 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFF5F5),
+      bottomNavigationBar: const CustomBottomNavBar(currentScreen: 'mood'),
       appBar: AppBar(
         backgroundColor: const Color(0xFFFFF5F5),
         elevation: 0,

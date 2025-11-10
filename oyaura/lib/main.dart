@@ -4,6 +4,12 @@ import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/moodtracker_screen.dart';
+import 'screens/journal_screen.dart';
+import 'screens/streak_screen.dart';
+import 'screens/leaderboard_screen.dart';
+import 'screens/avatar_screen.dart';
+import 'screens/goals_screen.dart';
+import 'screens/routine_screen.dart';
 
 void main() {
   runApp(OyauraApp());
@@ -26,6 +32,13 @@ class OyauraApp extends StatelessWidget {
         '/signup': (context) => SignupScreen(),
         '/mood': (context) => const MoodTrackerScreen(),
         '/home': (context) => HomeScreen(),
+        // New feature routes
+        '/journal': (context) => const JournalScreen(),
+        '/streak': (context) => const StreakScreen(),
+        '/leaderboard': (context) => const LeaderboardScreen(),
+        '/avatar': (context) => const AvatarScreen(),
+        '/goals': (context) => const GoalsScreen(),
+        '/routine': (context) => const RoutineScreen(),
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
+import '../widgets/custom_bottom_nav.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -44,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCF9EA),
+      bottomNavigationBar: const CustomBottomNavBar(currentScreen: 'home'),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
