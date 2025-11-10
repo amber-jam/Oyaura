@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../widgets/logo_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class StartupScreen extends StatefulWidget {
+  const StartupScreen({super.key});
+
   @override
   StartupScreenState createState() => StartupScreenState();
 }
@@ -14,7 +17,7 @@ class StartupScreenState extends State<StartupScreen> with SingleTickerProviderS
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
 
@@ -34,9 +37,8 @@ class StartupScreenState extends State<StartupScreen> with SingleTickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Color(0xFFEFF8F7),
+      backgroundColor: const Color(0xFFEFF8F7),
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
@@ -44,25 +46,26 @@ class StartupScreenState extends State<StartupScreen> with SingleTickerProviderS
             mainAxisSize: MainAxisSize.min,
             children: [
               LogoWidget(), // height: 300 inside widget
-              SizedBox(height: 24),
-              Text(
-                'Oyaura Wellness',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
+              const SizedBox(height: 24),
+                Text(
+                  'Oyaura Wellness',
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFFFA4A4),
+                  ),
                 ),
-              ),
-              SizedBox(height: 12),
-              Text(
-                'Your journey begins here',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[700],
+                const SizedBox(height: 12),
+                Text(
+                  'Your journey begins here',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey[700],
+                  ),
                 ),
-              ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 48.0),
                 child: Column(
@@ -75,16 +78,17 @@ class StartupScreenState extends State<StartupScreen> with SingleTickerProviderS
                           Navigator.pushNamed(context, '/login');
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primary,
-                          foregroundColor: colorScheme.onPrimary,
+                          backgroundColor: const Color(0xFFFFE5E5),
+                          foregroundColor: const Color(0xFFFFA4A4),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(color: Color(0xFFFFA4A4)),
                           ),
                         ),
-                        child: Text('Login', style: TextStyle(fontSize: 16)),
+                        child: const Text('Login', style: TextStyle(fontSize: 16)),
                       ),
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     SizedBox(
                       height: 48,
                       child: OutlinedButton(
@@ -92,13 +96,14 @@ class StartupScreenState extends State<StartupScreen> with SingleTickerProviderS
                           Navigator.pushNamed(context, '/signup');
                         },
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: colorScheme.primary),
-                          foregroundColor: colorScheme.primary,
+                          backgroundColor: const Color(0xFFEFF8F7),
+                          foregroundColor: const Color(0xFFFFA4A4),
+                          side: const BorderSide(color: Color(0xFFFFA4A4)),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: Text('Sign up', style: TextStyle(fontSize: 16)),
+                        child: const Text('Sign up', style: TextStyle(fontSize: 16)),
                       ),
                     ),
                   ],
