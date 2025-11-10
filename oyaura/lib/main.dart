@@ -20,8 +20,8 @@ class OyauraApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => StartupScreen(),
-        '/login': (context) => MoodTrackerScreen(),
-        '/home': (context) => HomeScreen(),
+        '/mood': (context) => const MoodTrackerScreen(),
+        '/signup': (context) => HomeScreen(),
       },
     );
   }
