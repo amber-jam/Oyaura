@@ -35,7 +35,7 @@ class OyauraApp extends StatelessWidget {
         // New feature routes
         '/journal': (context) => const JournalScreen(),
         '/streak': (context) => const StreakScreen(),
-        '/leaderboard': (context) => const LeaderboardScreen(),
+        '/leaderboard': (context) => LeaderboardScreen(),
         '/avatar': (context) => const AvatarScreen(),
         '/goals': (context) => const GoalsScreen(),
         '/routine': (context) => const RoutineScreen(),
