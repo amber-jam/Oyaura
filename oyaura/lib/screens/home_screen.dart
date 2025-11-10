@@ -103,7 +103,7 @@ class HomeScreen extends StatelessWidget {
                         value: goalProgress,
                         strokeWidth: 8,
                         backgroundColor: Colors.grey[300],
-                        color: const Color(0xFFDC143C),
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFDC143C)),
                       ),
                       Text(
                         '${(goalProgress * 100).toInt()}%',
@@ -165,7 +165,7 @@ class _NavIcon extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _NavIcon({required this.icon, required this.label, required this.onTap, super.key});
+  const _NavIcon({required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
