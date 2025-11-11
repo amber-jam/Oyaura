@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/startup_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/homescreen_ui.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/moodtracker_screen.dart';
@@ -31,13 +31,12 @@ class OyauraApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),
         '/mood': (context) => const MoodTrackerScreen(),
-        '/home': (context) => HomeScreen(),
-        // New feature routes
+        '/home': (context) => const HomeScreenUI(),
         '/journal': (context) => const JournalScreen(),
         '/streak': (context) => const StreakScreen(),
         '/leaderboard': (context) => LeaderboardScreen(),
-        '/avatar': (context) => const AvatarScreen(),
-        '/goals': (context) => const GoalsScreen(),
+        '/avatar': (context) => const AvatarUI(),
+        '/goals': (context) => const GoalMakerUI(),
         '/routine': (context) => const RoutineScreen(),
       },
     );

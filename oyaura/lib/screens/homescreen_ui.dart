@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/custom_bottom_nav.dart'; // Adjust path as needed
 
 const _bg = Color(0xFFF3F4F6);
 const _phoneShell = Colors.white;
@@ -17,80 +18,65 @@ class HomeScreenUI extends StatelessWidget {
     return Scaffold(
       backgroundColor: _bg,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Container(
-              margin: const EdgeInsets.all(_g),
-              decoration: BoxDecoration(
-                color: _phoneShell,
-                borderRadius: BorderRadius.circular(28),
-                boxShadow: const [
-                  BoxShadow(color: Colors.black12, blurRadius: 24, offset: Offset(0, 12)),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(28),
-                child: Column(
-                  children: [
-                    Container(height: 24, color: _phoneShell),
-                    Expanded(
-                      child: Container(
-                        color: _panel,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: _g,
-                              top: _g,
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 22),
-                                color: _muted,
-                                onPressed: () => Navigator.maybePop(context),
-                              ),
-                            ),
-                            Positioned(
-                              right: _g,
-                              top: _g,
-                              child: _ProfilePill(onTap: () {}),
-                            ),
-                            Positioned.fill(
-                              top: 56,
-                              bottom: 96,
-                              child: SingleChildScrollView(
-                                padding: const EdgeInsets.fromLTRB(_g, _g, _g, _g * 2),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    _AvatarHero(onTap: () => Navigator.pushNamed(context, '/avatar')),
-                                    const SizedBox(height: _g * 1.5),
-                                    const _StatsAndMessageCard(),
-                                    const SizedBox(height: _g),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              child: _BottomRoundNav(
-                                onHome: () => Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false),
-                                onAvatar: () => Navigator.pushNamed(context, '/avatar'),   // 2nd icon → Avatar
-                                onGoals: () => Navigator.pushNamed(context, '/goalmaker'), // 3rd icon → GoalMaker
-                                onStats: () {},
-                                onStore: () {},
-                                onStreaks: () {},
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: _phoneShell,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withAlpha((0.05 * 255).round()),
+                      blurRadius: 24,
+                      offset: const Offset(0, 12),
                     ),
                   ],
                 ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  child: Container(
+                    color: _panel,
+                    child: Stack(
+                      children: [
+                        Positioned(
+                          left: _g,
+                          top: _g,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 22),
+                            color: _muted,
+                            onPressed: () => Navigator.maybePop(context),
+                          ),
+                        ),
+                        Positioned(
+                          right: _g,
+                          top: _g,
+                          child: _ProfilePill(onTap: () {}),
+                        ),
+                        Positioned.fill(
+                          top: 56,
+                          bottom: 96,
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(_g, _g, _g, _g * 2),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                _AvatarHero(onTap: () => Navigator.pushNamed(context, '/avatar')),
+                                const SizedBox(height: _g * 1.5),
+                                const _StatsAndMessageCard(),
+                                const SizedBox(height: _g),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
+            const CustomBottomNavBar(currentScreen: 'home'),
+          ],
         ),
       ),
     );

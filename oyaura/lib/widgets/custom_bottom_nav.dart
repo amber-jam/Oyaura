@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+const _accent = Color(0xFFF4A3A3);
+const _muted = Color(0xFF7A8087);
+const _g = 16.0;
+
 class CustomBottomNavBar extends StatelessWidget {
   final String currentScreen;
 
@@ -10,59 +14,78 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define all possible screens and their icons
     final Map<String, IconData> screens = {
-      'home': Icons.home,
-      'mood': Icons.mood,
-      'journal': Icons.book,
-      'streak': Icons.local_fire_department,
-      'leaderboard': Icons.leaderboard,
-      'avatar': Icons.person,
-      'goals': Icons.track_changes,
-      'routine': Icons.schedule,
+      'home': Icons.home_rounded,
+      'mood': Icons.emoji_emotions_rounded,
+      'journal': Icons.book_rounded,
+      'streak': Icons.local_fire_department_rounded,
+      'leaderboard': Icons.leaderboard_rounded,
+      'avatar': Icons.person_rounded,
+      'goals': Icons.flag_rounded,
+      'routine': Icons.schedule_rounded,
     };
 
-    // Remove current screen from the list and ensure home is available if not current
-    Map<String, IconData> navigationScreens = Map.from(screens);
-    if (currentScreen != 'home') {
-      navigationScreens.remove(currentScreen);
-    }
-    
-    // Ensure we only show 6 items (plus home in middle if not current screen)
-    List<MapEntry<String, IconData>> displayItems = navigationScreens.entries.take(6).toList();
+    // Remove current screen from outer list (except home)
+    final List<MapEntry<String, IconData>> outerItems = screens.entries
+        .where((entry) => entry.key != currentScreen && entry.key != 'home')
+        .toList();
+
+    // Ensure we only show 6 items around home
+    final List<MapEntry<String, IconData>> displayItems = outerItems.take(6).toList();
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withAlpha((0.3 * 255).round()),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, -1),
+            color: Colors.black12.withAlpha((0.3 * 255).round()),
+            blurRadius: 12,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ...displayItems.take(3).map((entry) => _buildNavItem(context, entry.key, entry.value)),
-            if (currentScreen != 'home')
-              _buildNavItem(context, 'home', Icons.home, isHome: true)
-            else
-              _buildNavItem(context, currentScreen, screens[currentScreen]!, isHome: true),
-            ...displayItems.skip(3).map((entry) => _buildNavItem(context, entry.key, entry.value)),
-          ],
-        ),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: _g),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ...displayItems.take(3).map((entry) => _NavDot(
+                screen: entry.key,
+                icon: entry.value,
+                isSelected: entry.key == currentScreen,
+              )),
+          _NavDot(
+            screen: 'home',
+            icon: screens['home']!,
+            isSelected: currentScreen == 'home',
+            isHome: true,
+          ),
+          ...displayItems.skip(3).map((entry) => _NavDot(
+                screen: entry.key,
+                icon: entry.value,
+                isSelected: entry.key == currentScreen,
+              )),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildNavItem(BuildContext context, String screen, IconData icon, {bool isHome = false}) {
-    final bool isSelected = screen == currentScreen;
-    
+class _NavDot extends StatelessWidget {
+  final String screen;
+  final IconData icon;
+  final bool isSelected;
+  final bool isHome;
+
+  const _NavDot({
+    required this.screen,
+    required this.icon,
+    required this.isSelected,
+    this.isHome = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         if (!isSelected) {
@@ -72,7 +95,7 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFFA4A4).withAlpha((0.2 * 255).round()) : Colors.transparent,
+          color: isSelected ? _accent.withAlpha((0.2 * 255).round()) : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -80,7 +103,7 @@ class CustomBottomNavBar extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isSelected ? const Color(0xFFFFA4A4) : Colors.grey,
+              color: isSelected ? _accent : _muted,
               size: isHome ? 32 : 24,
             ),
             if (!isHome) const SizedBox(height: 4),
@@ -89,7 +112,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 screen[0].toUpperCase() + screen.substring(1),
                 style: TextStyle(
                   fontSize: 12,
-                  color: isSelected ? const Color(0xFFFFA4A4) : Colors.grey,
+                  color: isSelected ? _accent : _muted,
                 ),
               ),
           ],

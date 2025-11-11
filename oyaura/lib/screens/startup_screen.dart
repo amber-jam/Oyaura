@@ -45,7 +45,7 @@ class StartupScreenState extends State<StartupScreen> with SingleTickerProviderS
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              LogoWidget(), // height: 300 inside widget
+              LogoWidget(),
               const SizedBox(height: 24),
                 Text(
                   'Oyaura Wellness',
