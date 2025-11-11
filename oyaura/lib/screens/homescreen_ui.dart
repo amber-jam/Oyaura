@@ -139,12 +139,12 @@ class _AvatarHero extends StatelessWidget {
           Container(
             width: 280,
             height: 280,
-            decoration: BoxDecoration(color: Colors.black12.withOpacity(0.05), shape: BoxShape.circle),
+            decoration: BoxDecoration(color:  Colors.black12.withAlpha((0.05 * 255).round()), shape: BoxShape.circle),
           ),
           Container(
             width: 210,
             height: 210,
-            decoration: BoxDecoration(color: Colors.black12.withOpacity(0.12), borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(color: Colors.black12.withAlpha((0.12 * 255).round()), borderRadius: BorderRadius.circular(16)),
             child: const Icon(Icons.image, size: 72, color: _muted),
           ),
         ],
@@ -215,7 +215,7 @@ class _CircleChartPlaceholder extends StatelessWidget {
       ),
       child: Center(
         child: Text('CHART',
-            style: TextStyle(color: _muted.withOpacity(0.9), fontWeight: FontWeight.w800, letterSpacing: 1.0)),
+            style: TextStyle(color: _muted.withAlpha((0.9 * 255).round()), fontWeight: FontWeight.w800, letterSpacing: 1.0)),
       ),
     );
   }
@@ -302,7 +302,7 @@ class _NavDot extends StatelessWidget {
           radius: 28,
           child: CircleAvatar(
             radius: 22,
-            backgroundColor: Colors.white.withOpacity(0.85),
+            backgroundColor: Colors.white.withAlpha((0.85 * 255).round()),
             child: Icon(icon, color: _ink),
           ),
         ),
