@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import '../widgets/logo_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class StartupScreen extends StatefulWidget {
+  const StartupScreen({super.key});
+
   @override
-  _StartupScreenState createState() => _StartupScreenState();
+  StartupScreenState createState() => StartupScreenState();
 }
 
-class _StartupScreenState extends State<StartupScreen> with SingleTickerProviderStateMixin {
+class StartupScreenState extends State<StartupScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
@@ -14,7 +17,7 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
 
@@ -35,30 +38,75 @@ class _StartupScreenState extends State<StartupScreen> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFEFF8F7),
+      backgroundColor: const Color(0xFFEFF8F7),
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              LogoWidget(), // height: 300 inside widget
-              SizedBox(height: 24),
-              Text(
-                'Oyaura Wellness',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal[800],
+              LogoWidget(),
+              const SizedBox(height: 24),
+                Text(
+                  'Oyaura Wellness',
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFFFFA4A4),
+                  ),
                 ),
-              ),
-              SizedBox(height: 12),
-              Text(
-                'Your journey begins here',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[700],
+                const SizedBox(height: 12),
+                Text(
+                  'Your journey begins here',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 48.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 48,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/login');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFE5E5),
+                          foregroundColor: const Color(0xFFFFA4A4),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(color: Color(0xFFFFA4A4)),
+                          ),
+                        ),
+                        child: const Text('Login', style: TextStyle(fontSize: 16)),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      height: 48,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/signup');
+                        },
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: const Color(0xFFEFF8F7),
+                          foregroundColor: const Color(0xFFFFA4A4),
+                          side: const BorderSide(color: Color(0xFFFFA4A4)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text('Sign up', style: TextStyle(fontSize: 16)),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
