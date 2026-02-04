@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../widgets/custom_bottom_nav.dart'; // Adjust path as needed
 
 const _bg = Color(0xFFF3F4F6);
