@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/logo_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
 	@override
@@ -47,17 +48,13 @@ class _LoginScreenState extends State<LoginScreen> {
 							Text(
 								'Welcome back',
 								textAlign: TextAlign.center,
-								style: TextStyle(
-									fontSize: 22,
-									fontWeight: FontWeight.w600,
-									color: Colors.teal[800],
-								),
+								style: GoogleFonts.playfairDisplay(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFF4A3A3)),
 							),
 							SizedBox(height: 8),
 							Text(
 								'Sign in to continue to Oyaura Wellness',
 								textAlign: TextAlign.center,
-								style: TextStyle(color: Colors.grey[700]),
+								style: GoogleFonts.playfairDisplay(color: Colors.grey[700]),
 							),
 							SizedBox(height: 24),
 
@@ -113,14 +110,16 @@ class _LoginScreenState extends State<LoginScreen> {
 											child: ElevatedButton(
 												onPressed: _submit,
 												style: ElevatedButton.styleFrom(
-													backgroundColor: colorScheme.primary,
+													backgroundColor: const Color(0xFFFFE5E5),
+                          foregroundColor: const Color(0xFFFFA4A4),
 													shape: RoundedRectangleBorder(
 														borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(color: Color(0xFFFFA4A4)),
 													),
 												),
 												child: Text(
 													'Login',
-													style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+													style: TextStyle(fontSize: 16),
 												),
 											),
 										),
@@ -137,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
 										onPressed: () {
 											Navigator.pushNamed(context, '/signup');
 										},
-										child: Text('Sign up', style: TextStyle(color: colorScheme.primary)),
+										child: Text('Sign up', style: TextStyle(color: Color(0xFFF4A3A3))),
 									)
 								],
 							),
