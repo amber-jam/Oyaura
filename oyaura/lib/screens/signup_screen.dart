@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/logo_widget.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -46,7 +47,7 @@ class _SignupScreenState extends State<SignupScreen> {
               Text(
                 'Create an account',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600, color: colorScheme.primary),
+                style: GoogleFonts.playfairDisplay(fontSize: 28, fontWeight: FontWeight.bold, color: Color(0xFFF4A3A3)),
               ),
               SizedBox(height: 16),
               Form(
@@ -56,6 +57,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     TextFormField(
                       controller: _nameController,
                       decoration: InputDecoration(labelText: 'Full name', prefixIcon: Icon(Icons.person_outline), border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
+                      //Try to change color of text
                       validator: (v) => (v == null || v.trim().isEmpty) ? 'Enter your name' : null,
                     ),
                     SizedBox(height: 12),
@@ -93,8 +95,11 @@ class _SignupScreenState extends State<SignupScreen> {
                       height: 48,
                       child: ElevatedButton(
                         onPressed: _submit,
-                        style: ElevatedButton.styleFrom(backgroundColor: colorScheme.primary, foregroundColor: colorScheme.onPrimary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-                        child: Text('Sign up', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                        style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFE5E5),
+                        foregroundColor: const Color(0xFFFFA4A4),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Color(0xFFFFA4A4)),)),
+                        child: Text('Sign up', style: TextStyle(fontSize: 16)),
                       ),
                     ),
                   ],
