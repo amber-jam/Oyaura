@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/custom_bottom_nav.dart';
+import '../widgets/mobile_layout.dart';
 
 class MoodEntry {
   final String emoji;
@@ -38,7 +38,14 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
   DateTime selectedDate = DateTime.now();
   double intensity = 3;
   final TextEditingController _noteController = TextEditingController();
-  final List<String> activityOptions = ['Work', 'Social', 'Rest', 'Exercise', 'Creative', 'Family'];
+  final List<String> activityOptions = [
+    'Work',
+    'Social',
+    'Rest',
+    'Exercise',
+    'Creative',
+    'Family',
+  ];
   final List<String> selectedActivities = [];
   final List<MoodEntry> moodLog = [];
 
@@ -81,31 +88,18 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
       selectedDate = DateTime.now();
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Mood saved!')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Mood saved!')));
   }
 
   @override
   Widget build(BuildContext context) {
     final emojis = ['😂', '😊', '😐', '😢', '😠'];
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F5),
-      bottomNavigationBar: const CustomBottomNavBar(currentScreen: 'mood'),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFFF5F5),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.home, color: Color(0xFFDC143C)),
-            onPressed: () {
-              Navigator.pushNamed(context, '/');
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
+    return MobileLayout(
+      currentScreen: 'mood',
+      child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,14 +128,13 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: isSelected ? const Color(0xFFDC143C) : Colors.transparent,
+                        color: isSelected
+                            ? const Color(0xFFDC143C)
+                            : Colors.transparent,
                         width: 2,
                       ),
                     ),
-                    child: Text(
-                      emoji,
-                      style: const TextStyle(fontSize: 32),
-                    ),
+                    child: Text(emoji, style: const TextStyle(fontSize: 32)),
                   ),
                 );
               }).toList(),
@@ -167,20 +160,14 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
             const SizedBox(height: 24),
             Row(
               children: [
-                Text(
-                  'Date:',
-                  style: GoogleFonts.playfairDisplay(fontSize: 16),
-                ),
+                Text('Date:', style: GoogleFonts.playfairDisplay(fontSize: 16)),
                 const SizedBox(width: 12),
                 Text(
                   '${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}',
                   style: GoogleFonts.playfairDisplay(fontSize: 16),
                 ),
                 const SizedBox(width: 12),
-                TextButton(
-                  onPressed: pickDate,
-                  child: const Text('Change'),
-                ),
+                TextButton(onPressed: pickDate, child: const Text('Change')),
               ],
             ),
             const SizedBox(height: 24),
@@ -242,7 +229,10 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFFDC143C),
                 side: const BorderSide(color: Color(0xFFDC143C), width: 2),
-                padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 60,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),

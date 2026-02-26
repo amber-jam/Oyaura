@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/custom_bottom_nav.dart';
+import '../widgets/mobile_layout.dart';
 
 class RoutineScreen extends StatelessWidget {
   const RoutineScreen({super.key});
@@ -18,21 +18,9 @@ class RoutineScreen extends StatelessWidget {
       {'label': 'Relaxation', 'icon': Icons.self_improvement, 'completed': false},
     ];
 
-    return Scaffold(
-      backgroundColor: softPink,
-      bottomNavigationBar: const CustomBottomNavBar(currentScreen: 'routine'),
-      appBar: AppBar(
-        title: const Text('My Day'),
-        backgroundColor: softPink,
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: GoogleFonts.playfairDisplay(
-          fontSize: 26,
-          fontWeight: FontWeight.bold,
-          color: accentColor,
-        ),
-      ),
-      body: Padding(
+    return MobileLayout(
+      currentScreen: 'routine',
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,46 +103,13 @@ class RoutineScreen extends StatelessWidget {
                       ),
                       child: Icon(
                         habit['icon'],
-                        color: accentColor,
-                        size: 28,
+                        color: habit['completed'] ? accentColor : Colors.grey,
+                        size: 32,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     Text(
                       habit['label'],
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Icon(
-                      habit['completed'] ? Icons.check_circle : Icons.radio_button_unchecked,
-                      color: habit['completed'] ? Colors.green : Colors.grey,
-                      size: 20,
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: 28),
-
-            // Reflection Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: ['Gratitude', 'Wins Today', 'Self-Care'].map((label) {
-                return Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 6),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: accentColor, width: 1.5),
-                    ),
-                    child: Text(
-                      label,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 16,
@@ -162,7 +117,7 @@ class RoutineScreen extends StatelessWidget {
                         color: accentColor,
                       ),
                     ),
-                  ),
+                  ],
                 );
               }).toList(),
             ),

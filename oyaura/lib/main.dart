@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/startup_screen.dart';
 import 'screens/homescreen_ui.dart';
 import 'screens/login_screen.dart';
@@ -11,7 +12,16 @@ import 'screens/avatar_screen.dart';
 import 'screens/goals_screen.dart';
 import 'screens/routine_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Your actual Supabase Database Connection!
+  await Supabase.initialize(
+    url: 'https://zkxfwoliehxgrqybiwux.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpreGZ3b2xpZWh4Z3JxeWJpd3V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5ODQwNTcsImV4cCI6MjA4NTU2MDA1N30.F7KIUqPsakzvdgDPxNGTh5A4jts5Y2OABr_-gkF1DFg',
+  );
+
   runApp(OyauraApp());
 }
 
@@ -42,4 +52,3 @@ class OyauraApp extends StatelessWidget {
     );
   }
 }
-

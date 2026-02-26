@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/custom_bottom_nav.dart';
+import '../widgets/mobile_layout.dart';
 
 class JournalScreen extends StatefulWidget {
   const JournalScreen({super.key});
@@ -9,7 +9,8 @@ class JournalScreen extends StatefulWidget {
   State<JournalScreen> createState() => _JournalScreenState();
 }
 
-class _JournalScreenState extends State<JournalScreen> with SingleTickerProviderStateMixin {
+class _JournalScreenState extends State<JournalScreen>
+    with SingleTickerProviderStateMixin {
   bool isListening = false;
   late AnimationController _pulseController;
 
@@ -48,21 +49,9 @@ class _JournalScreenState extends State<JournalScreen> with SingleTickerProvider
   Widget build(BuildContext context) {
     final Color accentColor = const Color(0xFFDC143C);
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F5),
-      bottomNavigationBar: const CustomBottomNavBar(currentScreen: 'journal'),
-      appBar: AppBar(
-        title: const Text('Journal'),
-        backgroundColor: const Color(0xFFFFF5F5),
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: GoogleFonts.playfairDisplay(
-          fontSize: 26,
-          fontWeight: FontWeight.bold,
-          color: accentColor,
-        ),
-      ),
-      body: Padding(
+    return MobileLayout(
+      currentScreen: 'journal',
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           children: [
@@ -133,13 +122,17 @@ class _JournalScreenState extends State<JournalScreen> with SingleTickerProvider
                         width: 180,
                         height: 180,
                         decoration: BoxDecoration(
-                          color: isListening ? accentColor.withAlpha(40) : Colors.white,
+                          color: isListening
+                              ? accentColor.withAlpha(40)
+                              : Colors.white,
                           shape: BoxShape.circle,
                           border: Border.all(color: accentColor, width: 2),
                         ),
                         child: Center(
                           child: Text(
-                            isListening ? 'Listening to you...' : 'Start Voice Input',
+                            isListening
+                                ? 'Listening to you...'
+                                : 'Start Voice Input',
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,

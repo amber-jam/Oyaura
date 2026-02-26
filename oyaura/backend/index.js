@@ -1,115 +1,107 @@
-const express = require('express');
-const cors = require('cors');
-const { Pool } = require('pg');
-require('dotenv').config();
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const express = require("express");
+const cors = require("cors");
+const pool = require("./db"); // This connects to your database
 
 const app = express();
-const port = process.env.PORT || 4000;
 
-// Middleware
+// --- MIDDLEWARE ---
 app.use(cors());
-app.use(express.json());
-
-// --- DATABASE CONNECTION (FIXED FOR SUPABASE) ---
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-  ssl: {
-    rejectUnauthorized: false
-  }
+app.use(express.json()); // Allows us to read JSON data sent from Flutter
+// Simple ping endpoint for connectivity testing
+app.get('/ping', (req, res) => {
+  res.json({ message: 'pong' });
 });
 
-// --- ROUTES ---
+// ==========================================
+// USER AUTHENTICATION ROUTES
+// ==========================================
 
-// 1. REGISTER USER
-app.post('/register', async (req, res) => {
+// 1. SIGN UP (Create a new user)
+app.post('/signup', async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-
-    const userCheck = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const { username, email, password } = req.body; 
+    
+    // A. Check if user already exists
+    const userCheck = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (userCheck.rows.length > 0) {
-      return res.status(401).json({ error: "User already exists!" });
+      return res.status(401).json("User already exists!");
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
+    // B. Create the new user
     const newUser = await pool.query(
-      'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING user_id, username, email',
-      [username, email, hashedPassword]
+      "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *",
+      [username, email, password]
     );
-    
+
+    // C. Send back the new User ID
     res.json(newUser.rows[0]);
+    
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json("Server Error");
   }
 });
 
-// 2. LOGIN USER
+// 2. LOGIN (Find existing user)
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-
-    if (user.rows.length === 0) {
-      return res.status(401).json({ error: "Password or Email is incorrect" });
-    }
-
-    const validPassword = await bcrypt.compare(password, user.rows[0].password_hash);
-    if (!validPassword) {
-      return res.status(401).json({ error: "Password or Email is incorrect" });
-    }
-
-    // FIXED LINE: No line breaks in the middle of the string
-    const token = jwt.sign({ user_id: user.rows[0].user_id }, process.env.JWT_SECRET || 'secret', { expiresIn: "1h" });
     
-    res.json({ token, user: user.rows[0] });
+    // A. Find user by email
+    const user = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    
+    if (user.rows.length === 0) {
+      return res.status(401).json("Password or Email is incorrect");
+    }
+
+    // B. Check password
+    if (password === user.rows[0].password_hash) {
+      res.json(user.rows[0]); // Send back user info
+    } else {
+      res.status(401).json("Password or Email is incorrect");
+    }
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json("Server Error");
   }
 });
 
-// 3. LOG MOOD
-app.post('/moods', async (req, res) => {
-  try {
-    const { user_id, mood_score, notes } = req.body;
-    const newMood = await pool.query(
-      'INSERT INTO mood_logs (user_id, mood_score, notes) VALUES ($1, $2, $3) RETURNING *',
-      [user_id, mood_score, notes]
-    );
-    res.json(newMood.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
+// ==========================================
+// GOAL ROUTES
+// ==========================================
 
-// 4. GET MOOD HISTORY
-app.get('/moods/:user_id', async (req, res) => {
+// 3. GET GOALS (Fetch specific user's goals)
+app.get('/goals/:user_id', async (req, res) => {
   try {
     const { user_id } = req.params;
-    const moods = await pool.query('SELECT * FROM mood_logs WHERE user_id = $1 ORDER BY logged_at DESC', [user_id]);
-    res.json(moods.rows);
+    // Order by: Not Completed first -> Priority -> Date
+    const allGoals = await pool.query(
+      `SELECT * FROM goals 
+       WHERE user_id = $1 
+       ORDER BY is_completed ASC, 
+       CASE WHEN priority = 'High' THEN 1 WHEN priority = 'Medium' THEN 2 ELSE 3 END, 
+       target_date ASC`, 
+      [user_id]
+    );
+    res.json(allGoals.rows);
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json("Server Error");
   }
 });
 
-// 5. CREATE GOAL
+// 4. CREATE GOAL
 app.post('/goals', async (req, res) => {
   try {
-    const { user_id, title } = req.body;
+    const { user_id, title, description, target_date, priority, category } = req.body;
+    
     const newGoal = await pool.query(
-      'INSERT INTO goals (user_id, title) VALUES ($1, $2) RETURNING *',
-      [user_id, title]
+      `INSERT INTO goals (user_id, title, description, target_date, priority, category) 
+       VALUES ($1, $2, $3, $4, $5, $6) 
+       RETURNING *`,
+      [user_id, title, description, target_date, priority, category]
     );
+    
     res.json(newGoal.rows[0]);
   } catch (err) {
     console.error(err.message);
@@ -117,18 +109,35 @@ app.post('/goals', async (req, res) => {
   }
 });
 
-// 6. GET GOALS
-app.get('/goals/:user_id', async (req, res) => {
+// 5. TOGGLE CHECKMARK (Update status)
+app.put('/goals/:id', async (req, res) => {
   try {
-    const { user_id } = req.params;
-    const goals = await pool.query('SELECT * FROM goals WHERE user_id = $1', [user_id]);
-    res.json(goals.rows);
+    const { id } = req.params;
+    const { is_completed } = req.body;
+    
+    await pool.query(
+      "UPDATE goals SET is_completed = $1 WHERE goal_id = $2",
+      [is_completed, id]
+    );
+    
+    res.json("Goal updated!");
   } catch (err) {
     console.error(err.message);
-    res.status(500).json({ error: err.message });
+    res.status(500).json("Server Error");
   }
 });
 
-app.listen(port, () => {
-  console.log(`Oyaura Server running on port ${port}`);
+// 6. DELETE GOAL
+app.delete('/goals/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("DELETE FROM goals WHERE goal_id = $1", [id]);
+    res.json("Goal deleted!");
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+app.listen(4000, () => {
+  console.log("Oyaura Server running on port 4000");
 });
