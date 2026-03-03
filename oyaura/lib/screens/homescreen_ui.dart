@@ -260,22 +260,16 @@ class _NavDot extends StatelessWidget {
     switch (semantic) {
       case 'Home':
         action = () => Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
-        break;
       case 'Avatar':
         action = () => Navigator.pushNamed(context, '/avatar');
-        break;
       case 'Goals':
         action = () => Navigator.pushNamed(context, '/goalmaker');
-        break;
       case 'Stats':
         action = () {};
-        break;
       case 'Store':
         action = () {};
-        break;
       case 'Streaks':
         action = () {};
-        break;
     }
 
     return Padding(

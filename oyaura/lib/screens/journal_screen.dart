@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/custom_bottom_nav.dart';
+import 'dart:io';
+
 
 class JournalScreen extends StatefulWidget {
   const JournalScreen({super.key});
@@ -42,6 +44,9 @@ class _JournalScreenState extends State<JournalScreen> with SingleTickerProvider
     }
 
     // TODO: Add voice recognition logic here
+
+    
+
   }
 
   @override
@@ -81,7 +86,7 @@ class _JournalScreenState extends State<JournalScreen> with SingleTickerProvider
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'What’s on your mind?',
+                    "What's on your mind?",
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 24,
                       fontStyle: FontStyle.italic,
