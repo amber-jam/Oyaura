@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/mobile_layout.dart';
+import '../widgets/custom_bottom_nav.dart';
 
 class MoodEntry {
   final String emoji;
@@ -63,7 +63,7 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
     }
   }
 
-  void handleSubmit() {
+  Future<void> handleSubmit() async {
     if (selectedEmoji == null || _noteController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a mood and enter a note.')),
@@ -87,6 +87,19 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
       selectedActivities.clear();
       selectedDate = DateTime.now();
     });
+
+    // Persist the logged date (YYYY-MM-DD) so the streak screen can read it.
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = entry.date.toIso8601String().split('T')[0];
+      final existing = prefs.getStringList('mood_dates') ?? <String>[];
+      if (!existing.contains(key)) {
+        existing.add(key);
+        await prefs.setStringList('mood_dates', existing);
+      }
+    } catch (e) {
+      // Ignore persistence errors for now
+    }
 
     ScaffoldMessenger.of(
       context,
