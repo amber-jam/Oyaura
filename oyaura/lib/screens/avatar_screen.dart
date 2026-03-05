@@ -15,7 +15,46 @@ class AvatarUI extends StatefulWidget {
 }
 
 class _AvatarUIState extends State<AvatarUI> {
-  final _items = List.generate(30, (i) => {'name': 'Item ${i + 1}', 'price': '\$\$\$'});
+  // --- 1. Master Data List (28 Unique Avatars) ---
+  final List<Map<String, String>> _items = [
+    {'name': 'Rickey', 'price': '100', 'image': 'assets/avatars/avatar1.jpg'},
+    {'name': 'Joy', 'price': '150', 'image': 'assets/avatars/avatar2.jpg'},
+    {'name': 'Alex', 'price': '200', 'image': 'assets/avatars/avatar3.jpg'},
+    {'name': 'Shawn', 'price': '250', 'image': 'assets/avatars/avatar4.jpg'},
+    {'name': 'Tony', 'price': '300', 'image': 'assets/avatars/avatar5.jpg'},
+    {'name': 'Wanda', 'price': '350', 'image': 'assets/avatars/avatar6.jpg'},
+    {'name': 'Lily', 'price': '400', 'image': 'assets/avatars/avatar7.jpg'},
+    {'name': 'Evan', 'price': '450', 'image': 'assets/avatars/avatar8.jpg'},
+    {'name': 'Happy Bot', 'price': '500', 'image': 'assets/avatars/avatar9.jpg'},
+    {'name': 'Alien Overlord', 'price': '999', 'image': 'assets/avatars/avatar10.jpg'},
+    {'name': 'Grizzly Rage', 'price': '600', 'image': 'assets/avatars/avatar11.jpg'},
+    {'name': 'Sleepy Bunny', 'price': '250', 'image': 'assets/avatars/avatar12.jpg'},
+    {'name': 'Pro Gamer', 'price': '400', 'image': 'assets/avatars/avatar13.jpg'},
+    {'name': 'MVP Sports', 'price': '300', 'image': 'assets/avatars/avatar14.jpg'},
+    {'name': 'Top Student', 'price': '200', 'image': 'assets/avatars/avatar15.jpg'},
+    {'name': 'Cyber Soldier', 'price': '850', 'image': 'assets/avatars/avatar16.jpg'},
+    {'name': 'Spring Vase', 'price': '150', 'image': 'assets/avatars/avatar17.jpg'},
+    {'name': 'Cool Roach', 'price': '777', 'image': 'assets/avatars/avatar18.jpg'},
+    {'name': 'Shocked Corgi', 'price': '550', 'image': 'assets/avatars/avatar19.jpg'},
+    {'name': 'Ninja Worm', 'price': '420', 'image': 'assets/avatars/avatar20.jpg'},
+    {'name': 'Calico Cat', 'price': '300', 'image': 'assets/avatars/avatar21.jpg'},
+    {'name': 'Tiny Penguin', 'price': '350', 'image': 'assets/avatars/avatar22.jpg'},
+    {'name': 'Sushi Roll', 'price': '200', 'image': 'assets/avatars/avatar23.jpg'},
+    {'name': 'Dino Friend', 'price': '450', 'image': 'assets/avatars/avatar24.jpg'},
+    {'name': 'Space Rocket', 'price': '700', 'image': 'assets/avatars/avatar25.jpg'},
+    {'name': 'Magic Potion', 'price': '500', 'image': 'assets/avatars/avatar26.jpg'},
+    {'name': 'Sunny Flower', 'price': '150', 'image': 'assets/avatars/avatar27.jpg'},
+    {'name': 'Golden Crown', 'price': '1000', 'image': 'assets/avatars/avatar28.jpg'},
+  ];
+
+  // TRACKS THE CURRENT SELECTION FOR THE BIG CIRCLE
+  late String _selectedAvatar;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedAvatar = _items[0]['image']!; // Default to first avatar
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +97,7 @@ class _AvatarUIState extends State<AvatarUI> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              // --- MAIN AVATAR PREVIEW ---
                               Container(
                                 width: 220,
                                 height: 220,
@@ -71,10 +111,20 @@ class _AvatarUIState extends State<AvatarUI> {
                                     color: Colors.black12.withAlpha((0.1 * 255).round()),
                                     borderRadius: BorderRadius.circular(18),
                                   ),
-                                  child: const Icon(Icons.image, size: 90, color: _muted),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: Image.asset(
+                                      _selectedAvatar,
+                                      fit: BoxFit.cover,
+                                      // Error handling if image doesn't exist
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          const Icon(Icons.person, size: 90, color: _muted),
+                                    ),
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: _g * 1.5),
+                              // --- AVATAR SELECTION GRID ---
                               Container(
                                 decoration: BoxDecoration(
                                   color: _pink.withAlpha((0.35 * 255).round()),
@@ -86,15 +136,25 @@ class _AvatarUIState extends State<AvatarUI> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
-                                    childAspectRatio: 0.88,
+                                    childAspectRatio: 0.82, // Adjusted for image + text
                                     crossAxisSpacing: 14,
                                     mainAxisSpacing: 14,
                                   ),
                                   itemCount: _items.length,
-                                  itemBuilder: (context, i) => _ShopTile(
-                                    name: _items[i]['name'] as String,
-                                    price: _items[i]['price'] as String,
-                                  ),
+                                  itemBuilder: (context, i) {
+                                    final item = _items[i];
+                                    return _ShopTile(
+                                      name: item['name']!,
+                                      price: item['price']!,
+                                      image: item['image']!,
+                                      isSelected: _selectedAvatar == item['image'],
+                                      onTap: () {
+                                        setState(() {
+                                          _selectedAvatar = item['image']!;
+                                        });
+                                      },
+                                    );
+                                  },
                                 ),
                               ),
                             ],
