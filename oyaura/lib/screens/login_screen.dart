@@ -3,7 +3,6 @@ import '../widgets/logo_widget.dart';
 
 class LoginScreen extends StatefulWidget {
 	@override
-	@override
 	State<LoginScreen> createState() => _LoginScreenState();
 }
 
