@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/custom_bottom_nav.dart';
-
+import 'package:shared_preferences/shared_preferences.dart'; // <-- ADDED THIS: Fixes the red error!
+import '../widgets/mobile_layout.dart';
 class MoodEntry {
   final String emoji;
   final String note;
@@ -101,9 +101,11 @@ class _MoodTrackerScreenState extends State<MoodTrackerScreen> {
       // Ignore persistence errors for now
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Mood saved!')));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Mood saved!'))
+      );
+    }
   }
 
   @override
