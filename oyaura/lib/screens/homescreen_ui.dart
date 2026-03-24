@@ -1,3 +1,4 @@
+import '../widgets/mobile_layout.dart';
 import 'package:flutter/material.dart';
 import '../widgets/custom_bottom_nav.dart'; // Adjust path as needed
 
@@ -15,16 +16,18 @@ class HomeScreenUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _bg,
-      body: SafeArea(
+    return MobileLayout(
+      currentScreen: 'home',
+      child: SafeArea(
         child: Column(
           children: [
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
                   color: _phoneShell,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black12.withAlpha((0.05 * 255).round()),
@@ -34,7 +37,9 @@ class HomeScreenUI extends StatelessWidget {
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
+                  ),
                   child: Container(
                     color: _panel,
                     child: Stack(
@@ -43,7 +48,10 @@ class HomeScreenUI extends StatelessWidget {
                           left: _g,
                           top: _g,
                           child: IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 22),
+                            icon: const Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 22,
+                            ),
                             color: _muted,
                             onPressed: () => Navigator.maybePop(context),
                           ),
@@ -57,11 +65,19 @@ class HomeScreenUI extends StatelessWidget {
                           top: 56,
                           bottom: 96,
                           child: SingleChildScrollView(
-                            padding: const EdgeInsets.fromLTRB(_g, _g, _g, _g * 2),
+                            padding: const EdgeInsets.fromLTRB(
+                              _g,
+                              _g,
+                              _g,
+                              _g * 2,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                _AvatarHero(onTap: () => Navigator.pushNamed(context, '/avatar')),
+                                _AvatarHero(
+                                  onTap: () =>
+                                      Navigator.pushNamed(context, '/avatar'),
+                                ),
                                 const SizedBox(height: _g * 1.5),
                                 const _StatsAndMessageCard(),
                                 const SizedBox(height: _g),
@@ -75,7 +91,6 @@ class HomeScreenUI extends StatelessWidget {
                 ),
               ),
             ),
-            const CustomBottomNavBar(currentScreen: 'home'),
           ],
         ),
       ),
@@ -102,7 +117,14 @@ class _ProfilePill extends StatelessWidget {
             children: [
               Icon(Icons.person, size: 18, color: _ink),
               SizedBox(width: 6),
-              Text('PROFILE', style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: 1.1, color: _ink)),
+              Text(
+                'PROFILE',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.1,
+                  color: _ink,
+                ),
+              ),
             ],
           ),
         ),
@@ -125,12 +147,18 @@ class _AvatarHero extends StatelessWidget {
           Container(
             width: 280,
             height: 280,
-            decoration: BoxDecoration(color:  Colors.black12.withAlpha((0.05 * 255).round()), shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: Colors.black12.withAlpha((0.05 * 255).round()),
+              shape: BoxShape.circle,
+            ),
           ),
           Container(
             width: 210,
             height: 210,
-            decoration: BoxDecoration(color: Colors.black12.withAlpha((0.12 * 255).round()), borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(
+              color: Colors.black12.withAlpha((0.12 * 255).round()),
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: const Icon(Icons.image, size: 72, color: _muted),
           ),
         ],
@@ -158,8 +186,14 @@ class _StatsAndMessageCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('“INSPIRATIONAL MESSAGE”',
-                    style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.0, color: _ink)),
+                Text(
+                  '“INSPIRATIONAL MESSAGE”',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                    color: _ink,
+                  ),
+                ),
                 SizedBox(height: 12),
                 _StatLine(label: '• STAT'),
                 SizedBox(height: 8),
@@ -182,7 +216,14 @@ class _StatLine extends StatelessWidget {
   final String label;
   @override
   Widget build(BuildContext context) {
-    return Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: _ink));
+    return Text(
+      label,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: _ink,
+      ),
+    );
   }
 }
 
@@ -197,11 +238,19 @@ class _CircleChartPlaceholder extends StatelessWidget {
         color: _panel,
         shape: BoxShape.circle,
         border: Border.all(color: Colors.black12, width: 1),
-        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
+        ],
       ),
       child: Center(
-        child: Text('CHART',
-            style: TextStyle(color: _muted.withAlpha((0.9 * 255).round()), fontWeight: FontWeight.w800, letterSpacing: 1.0)),
+        child: Text(
+          'CHART',
+          style: TextStyle(
+            color: _muted.withAlpha((0.9 * 255).round()),
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.0,
+          ),
+        ),
       ),
     );
   }
@@ -219,28 +268,54 @@ class _BottomRoundNav extends StatelessWidget {
 
   final VoidCallback onHome;
   final VoidCallback onAvatar; // 2nd
-  final VoidCallback onGoals;  // 3rd
-  final VoidCallback onStats;  // 4th
-  final VoidCallback onStore;  // 5th
+  final VoidCallback onGoals; // 3rd
+  final VoidCallback onStats; // 4th
+  final VoidCallback onStore; // 5th
   final VoidCallback onStreaks; // 6th
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration:
-          const BoxDecoration(color: _accent, borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
+      decoration: const BoxDecoration(
+        color: _accent,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: _g),
         child: Row(
           children: const [
-            _NavDot(icon: Icons.home_rounded, semantic: 'Home', withAction: true),
-            _NavDot(icon: Icons.emoji_emotions_rounded, semantic: 'Avatar', withAction: true),
-            _NavDot(icon: Icons.flag_rounded, semantic: 'Goals', withAction: true),
-            _NavDot(icon: Icons.bar_chart_rounded, semantic: 'Stats', withAction: true),
-            _NavDot(icon: Icons.storefront_rounded, semantic: 'Store', withAction: true),
-            _NavDot(icon: Icons.local_fire_department_rounded, semantic: 'Streaks', withAction: true),
+            _NavDot(
+              icon: Icons.home_rounded,
+              semantic: 'Home',
+              withAction: true,
+            ),
+            _NavDot(
+              icon: Icons.emoji_emotions_rounded,
+              semantic: 'Avatar',
+              withAction: true,
+            ),
+            _NavDot(
+              icon: Icons.flag_rounded,
+              semantic: 'Goals',
+              withAction: true,
+            ),
+            _NavDot(
+              icon: Icons.bar_chart_rounded,
+              semantic: 'Stats',
+              withAction: true,
+            ),
+            _NavDot(
+              icon: Icons.storefront_rounded,
+              semantic: 'Store',
+              withAction: true,
+            ),
+            _NavDot(
+              icon: Icons.local_fire_department_rounded,
+              semantic: 'Streaks',
+              withAction: true,
+            ),
           ],
         ),
       ),
@@ -249,7 +324,11 @@ class _BottomRoundNav extends StatelessWidget {
 }
 
 class _NavDot extends StatelessWidget {
-  const _NavDot({required this.icon, required this.semantic, this.withAction = false});
+  const _NavDot({
+    required this.icon,
+    required this.semantic,
+    this.withAction = false,
+  });
   final IconData icon;
   final String semantic;
   final bool withAction;
@@ -259,7 +338,8 @@ class _NavDot extends StatelessWidget {
     VoidCallback action = () {};
     switch (semantic) {
       case 'Home':
-        action = () => Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
+        action = () =>
+            Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
       case 'Avatar':
         action = () => Navigator.pushNamed(context, '/avatar');
       case 'Goals':

@@ -1,71 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 
 const _accent = Color(0xFFF4A3A3);
 const _muted = Color(0xFF7A8087);
-const _g = 16.0;
 
+// Scrollable bottom navigation bar constrained for mobile views.
 class CustomBottomNavBar extends StatelessWidget {
   final String currentScreen;
 
-  const CustomBottomNavBar({
-    super.key,
-    required this.currentScreen,
-  });
+  const CustomBottomNavBar({super.key, required this.currentScreen});
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, IconData> screens = {
-      'home': Icons.home_rounded,
-      'mood': Icons.emoji_emotions_rounded,
-      'journal': Icons.book_rounded,
-      'streak': Icons.local_fire_department_rounded,
-      'leaderboard': Icons.leaderboard_rounded,
-      'avatar': Icons.person_rounded,
-      'goals': Icons.flag_rounded,
-      'routine': Icons.schedule_rounded,
-    };
+    final List<Map<String, dynamic>> tabs = [
+      {'name': 'home', 'icon': Icons.home_rounded, 'label': 'Home'},
+      {'name': 'mood', 'icon': Icons.emoji_emotions_rounded, 'label': 'Mood'},
+      {'name': 'journal', 'icon': Icons.book_rounded, 'label': 'Journal'},
+      {
+        'name': 'streak',
+        'icon': Icons.local_fire_department_rounded,
+        'label': 'Streak',
+      },
+      {'name': 'goals', 'icon': Icons.flag_rounded, 'label': 'Goals'},
+      {'name': 'routine', 'icon': Icons.schedule_rounded, 'label': 'Routine'},
+      {
+        'name': 'leaderboard',
+        'icon': Icons.leaderboard_rounded,
+        'label': 'Rank',
+      },
+      {'name': 'avatar', 'icon': Icons.person_rounded, 'label': 'Avatar'},
+    ];
 
-    // Remove current screen from outer list (except home)
-    final List<MapEntry<String, IconData>> outerItems = screens.entries
-        .where((entry) => entry.key != currentScreen && entry.key != 'home')
-        .toList();
+    return SafeArea(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double containerWidth = constraints.maxWidth > 450
+              ? 450
+              : constraints.maxWidth;
+          double tabWidth = containerWidth / 4;
 
-    // Ensure we only show 6 items around home
-    final List<MapEntry<String, IconData>> displayItems = outerItems.take(6).toList();
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12.withAlpha((0.3 * 255).round()),
-            blurRadius: 12,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: _g),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          ...displayItems.take(3).map((entry) => _NavDot(
-                screen: entry.key,
-                icon: entry.value,
-                isSelected: entry.key == currentScreen,
-              )),
-          _NavDot(
-            screen: 'home',
-            icon: screens['home']!,
-            isSelected: currentScreen == 'home',
-            isHome: true,
-          ),
-          ...displayItems.skip(3).map((entry) => _NavDot(
-                screen: entry.key,
-                icon: entry.value,
-                isSelected: entry.key == currentScreen,
-              )),
-        ],
+          return Container(
+            height: 85,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(18),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12.withAlpha((0.3 * 255).round()),
+                  blurRadius: 12,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
+            // Allows mouse dragging on web browsers
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  children: tabs.map((tab) {
+                    return SizedBox(
+                      width: tabWidth,
+                      child: _NavDot(
+                        screen: tab['name'],
+                        label: tab['label'],
+                        icon: tab['icon'],
+                        isSelected: currentScreen == tab['name'],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -73,15 +86,15 @@ class CustomBottomNavBar extends StatelessWidget {
 
 class _NavDot extends StatelessWidget {
   final String screen;
+  final String label;
   final IconData icon;
   final bool isSelected;
-  final bool isHome;
 
   const _NavDot({
     required this.screen,
+    required this.label,
     required this.icon,
     required this.isSelected,
-    this.isHome = false,
   });
 
   @override
@@ -89,32 +102,32 @@ class _NavDot extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (!isSelected) {
-          Navigator.pushNamed(context, '/$screen');
+          Navigator.pushReplacementNamed(context, '/$screen');
         }
       },
       child: Container(
-        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? _accent.withAlpha((0.2 * 255).round()) : Colors.transparent,
+          color: isSelected
+              ? _accent.withAlpha((0.2 * 255).round())
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              color: isSelected ? _accent : _muted,
-              size: isHome ? 32 : 24,
-            ),
-            if (!isHome) const SizedBox(height: 4),
-            if (!isHome)
-              Text(
-                screen[0].toUpperCase() + screen.substring(1),
-                style: TextStyle(
-                  fontSize: 12,
-                  color: isSelected ? _accent : _muted,
-                ),
+            Icon(icon, color: isSelected ? _accent : _muted, size: 26),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isSelected ? _accent : _muted,
               ),
+            ),
           ],
         ),
       ),

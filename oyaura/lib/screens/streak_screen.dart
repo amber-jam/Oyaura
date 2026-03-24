@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../widgets/custom_bottom_nav.dart';
+import 'package:google_fonts/google_fonts.dart'; 
+import 'package:shared_preferences/shared_preferences.dart'; 
+import '../widgets/mobile_layout.dart'; // <-- Brought your layout wrapper back!
 
 class StreakScreen extends StatefulWidget {
   const StreakScreen({super.key});
@@ -93,70 +93,74 @@ class _StreakScreenState extends State<StreakScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final month = DateTime.now();
+    final now = DateTime.now();
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F5),
-      bottomNavigationBar: const CustomBottomNavBar(currentScreen: 'streak'),
-      appBar: AppBar(
-        title: const Text('Streak Counter'),
-        backgroundColor: const Color(0xFFFFF5F5),
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+    // Replaced Scaffold with MobileLayout and built the actual UI!
+    return MobileLayout(
+      currentScreen: 'streak',
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Top flame + numbers
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Number
-                  Text(
-                    '$_currentStreak',
-                    style: GoogleFonts.playfairDisplay(fontSize: 40, fontWeight: FontWeight.bold, color: const Color(0xFFDC143C)),
-                  ),
-                  const SizedBox(width: 12),
-                  // Flame
-                  const Icon(Icons.local_fire_department_rounded, size: 44, color: Color(0xFFFF6B6B)),
-                  const SizedBox(width: 12),
-                  // Label
-                  Text(
-                    _currentStreak == 1 ? 'Day Streak' : 'Day Streaks',
-                    style: GoogleFonts.playfairDisplay(fontSize: 18, color: Colors.grey[800]),
-                  ),
-                ],
+            Text(
+              'Your Consistency',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 28,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFFDC143C),
               ),
             ),
-
-            const SizedBox(height: 18),
-
-            // Calendar
+            const SizedBox(height: 24),
+            
+            // The Streak Counter Box
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(vertical: 32),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6)],
+                color: const Color(0xFFFFE5E5),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFFFA4A4)),
               ),
               child: Column(
                 children: [
                   Text(
-                    '${month.year} — ${month.month}',
-                    style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.w600),
+                    '$_currentStreak', // Using the actual calculated streak variable
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 72,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFFDC143C),
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  GridView.count(
-                    crossAxisCount: 7,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: _buildCalendar(month),
+                  Text(
+                    'Day Streak!',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[800],
+                    ),
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 32),
+            
+            Text(
+              'This Month',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // The Calendar Grid
+            GridView.count(
+              shrinkWrap: true, // Needed inside SingleChildScrollView
+              physics: const NeverScrollableScrollPhysics(), // Disables inner scrolling
+              crossAxisCount: 7, // 7 days in a week
+              children: _buildCalendar(now), // Calling your teammate's calendar function!
             ),
           ],
         ),

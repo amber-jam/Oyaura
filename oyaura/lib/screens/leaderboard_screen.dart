@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/custom_bottom_nav.dart';
+import '../widgets/mobile_layout.dart';
 
 class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({super.key});
@@ -30,32 +30,22 @@ class LeaderboardScreen extends StatelessWidget {
       {'rank': 15, 'name': 'Indie', 'streak': 4},
     ];
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFF5F5),
-      bottomNavigationBar: const CustomBottomNavBar(currentScreen: 'leaderboard'),
-      appBar: AppBar(
-        title: const Text('Leaderboard'),
-        backgroundColor: const Color(0xFFFFF5F5),
-        elevation: 0,
-        centerTitle: true,
-        titleTextStyle: GoogleFonts.playfairDisplay(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-          color: accentColor,
-        ),
-      ),
-      body: Padding(
+    return MobileLayout(
+      currentScreen: 'leaderboard',
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Top 3
-            Text('Top 3 Streaks',
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: accentColor,
-                )),
+            Text(
+              'Top 3 Streaks',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: accentColor,
+              ),
+            ),
             const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,15 +61,22 @@ class LeaderboardScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Text(user['medal'], style: const TextStyle(fontSize: 28)),
+                        Text(
+                          user['medal'],
+                          style: const TextStyle(fontSize: 28),
+                        ),
                         const SizedBox(height: 6),
-                        Text(user['name'],
-                            style: GoogleFonts.playfairDisplay(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        Text('${user['streak']} days',
-                            style: GoogleFonts.playfairDisplay(fontSize: 16)),
+                        Text(
+                          user['name'],
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${user['streak']} days',
+                          style: GoogleFonts.playfairDisplay(fontSize: 16),
+                        ),
                       ],
                     ),
                   ),
@@ -88,12 +85,14 @@ class LeaderboardScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 28),
-            Text('Your Position',
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: accentColor,
-                )),
+            Text(
+              'Your Position',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: accentColor,
+              ),
+            ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(16),
@@ -105,24 +104,30 @@ class LeaderboardScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Asia',
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  Text('Rank #12 — 5-day streak',
-                      style: GoogleFonts.playfairDisplay(fontSize: 16)),
+                  Text(
+                    'Asia',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Rank #12 — 5-day streak',
+                    style: GoogleFonts.playfairDisplay(fontSize: 16),
+                  ),
                 ],
               ),
             ),
 
             const SizedBox(height: 28),
-            Text('Leaderboard',
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: accentColor,
-                )),
+            Text(
+              'Leaderboard',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: accentColor,
+              ),
+            ),
             const SizedBox(height: 12),
             Expanded(
               child: ListView.builder(
@@ -140,13 +145,17 @@ class LeaderboardScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${user['rank']}. ${user['name']}',
-                            style: GoogleFonts.playfairDisplay(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            )),
-                        Text('${user['streak']} days',
-                            style: GoogleFonts.playfairDisplay(fontSize: 16)),
+                        Text(
+                          '${user['rank']}. ${user['name']}',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '${user['streak']} days',
+                          style: GoogleFonts.playfairDisplay(fontSize: 16),
+                        ),
                       ],
                     ),
                   );

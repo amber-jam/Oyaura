@@ -1,20 +1,23 @@
-# Oyaura Backend (Productivity & Wellness API)
+# Oyaura Application Repository
 
-This is the backend server for **Oyaura**, handling User Authentication, Mood Journals, and Goal Tracking.
+Oyaura is a mobile application developed for productivity and wellness, featuring User Authentication, Mood Journals, and Goal Tracking.
 
-It connects to a shared **Supabase (PostgreSQL)** database so the whole team sees the same data.
+## Architecture
 
-##  Quick Start for the Team
+This project utilizes a Backend-as-a-Service (BaaS) architecture. The application connects directly to a shared Supabase (PostgreSQL) cloud database via the Flutter client. 
+
+**Note:** A local Node.js backend server is no longer required or supported.
+
+* **Supabase Dashboard:** [https://supabase.com/dashboard/project/zkxfwoliehxgrqybiwux/settings/general](https://supabase.com/dashboard/project/zkxfwoliehxgrqybiwux/settings/general)
+
+## Local Development Setup
 
 ### 1. Prerequisites
-- Install [Node.js](https://nodejs.org/) (LTS version).
-- (Optional) VS Code for editing.
+* [Flutter SDK](https://docs.flutter.dev/get-started/install) (version 3.9.0 or higher) installed and added to your system PATH.
+* A compatible IDE (VS Code with Flutter/Dart extensions or Android Studio).
 
-### 2. Setup
-
-Open your terminal in the `backend` folder:
+### 2. Installation
+Clone the repository and navigate to the root project directory (where `pubspec.yaml` is located). Fetch the required Flutter dependencies:
 
 ```powershell
-cd oyaura/backend
-npm install
-```
+flutter pub get
