@@ -140,7 +140,7 @@ class _StreakScreenState extends State<StreakScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 6)],
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 6)],
               ),
               child: Column(
                 children: [

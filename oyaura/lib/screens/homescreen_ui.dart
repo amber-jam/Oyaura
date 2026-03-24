@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../widgets/custom_bottom_nav.dart'; // Adjust path as needed
 
 const _bg = Color(0xFFF3F4F6);
@@ -261,22 +260,16 @@ class _NavDot extends StatelessWidget {
     switch (semantic) {
       case 'Home':
         action = () => Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
-        break;
       case 'Avatar':
         action = () => Navigator.pushNamed(context, '/avatar');
-        break;
       case 'Goals':
         action = () => Navigator.pushNamed(context, '/goalmaker');
-        break;
       case 'Stats':
         action = () {};
-        break;
       case 'Store':
         action = () {};
-        break;
       case 'Streaks':
         action = () {};
-        break;
     }
 
     return Padding(
