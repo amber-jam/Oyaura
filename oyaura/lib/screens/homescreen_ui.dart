@@ -1,18 +1,66 @@
-import '../widgets/mobile_layout.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-// Adjust path as needed
+import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
 
-const _bg = Color(0xFFF3F4F6);
+import '../services/avatar_preview_store.dart';
+import '../widgets/mobile_layout.dart';
+
 const _phoneShell = Colors.white;
-const _panel = Color(0xFFF8F5E9);
-const _accent = Color(0xFFF4A3A3);
+const _pinkBg = Color(0xFFFAD3D6);
+const _greenCard = Color(0xFFBFE1D7);
 const _mint = Color(0xFFCBE5E4);
+const _panel = Color(0xFFF8F5E9);
 const _ink = Color(0xFF2B2B2B);
 const _muted = Color(0xFF7A8087);
+const _textPink = Color(0xFFF3B6C4);
+const _gold = Color(0xFFF6D66B);
 const _g = 16.0;
 
-class HomeScreenUI extends StatelessWidget {
+class HomeScreenUI extends StatefulWidget {
   const HomeScreenUI({super.key});
+
+  @override
+  State<HomeScreenUI> createState() => _HomeScreenUIState();
+}
+
+class _HomeScreenUIState extends State<HomeScreenUI> {
+  String _quote = 'Loading inspiration...';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchQuote();
+  }
+
+  Future<void> _fetchQuote() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://api.quotable.io/random?maxLength=90'),
+      );
+
+      if (!mounted) return;
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as Map<String, dynamic>;
+        final content = (data['content'] ?? '').toString().trim();
+        setState(() {
+          _quote = content.isNotEmpty
+              ? content
+              : 'Stay focused. You are doing better than you think.';
+        });
+      } else {
+        setState(() {
+          _quote = 'Stay focused. You are doing better than you think.';
+        });
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _quote = 'Stay focused. You are doing better than you think.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +78,7 @@ class HomeScreenUI extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12.withAlpha((0.05 * 255).round()),
+                      color: Colors.black12.withAlpha(13),
                       blurRadius: 24,
                       offset: const Offset(0, 12),
                     ),
@@ -41,7 +89,7 @@ class HomeScreenUI extends StatelessWidget {
                     top: Radius.circular(28),
                   ),
                   child: Container(
-                    color: _panel,
+                    color: _pinkBg,
                     child: Stack(
                       children: [
                         Positioned(
@@ -65,22 +113,32 @@ class HomeScreenUI extends StatelessWidget {
                           top: 56,
                           bottom: 96,
                           child: SingleChildScrollView(
-                            padding: const EdgeInsets.fromLTRB(
-                              _g,
-                              _g,
-                              _g,
-                              _g * 2,
-                            ),
+                            padding: const EdgeInsets.fromLTRB(12, 8, 12, 34),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                _AvatarHero(
-                                  onTap: () =>
-                                      Navigator.pushNamed(context, '/avatar'),
+                                ValueListenableBuilder<AvatarPreviewData>(
+                                  valueListenable: AvatarPreviewStore.instance,
+                                  builder: (context, avatar, _) {
+                                    return _AvatarHero(
+                                      avatar: avatar,
+                                      onTap: () =>
+                                          Navigator.pushNamed(context, '/avatar'),
+                                    );
+                                  },
                                 ),
-                                const SizedBox(height: _g * 1.5),
-                                const _StatsAndMessageCard(),
-                                const SizedBox(height: _g),
+                                const SizedBox(height: 10),
+                                ValueListenableBuilder<int>(
+                                  valueListenable: AvatarPreviewStore.coins,
+                                  builder: (context, coins, _) {
+                                    return _StatsAndMessageCard(
+                                      quote: _quote,
+                                      coins: coins,
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 18),
+                                const _CircleChartSection(),
+                                const SizedBox(height: 28),
                               ],
                             ),
                           ),
@@ -100,6 +158,7 @@ class HomeScreenUI extends StatelessWidget {
 
 class _ProfilePill extends StatelessWidget {
   const _ProfilePill({required this.onTap});
+
   final VoidCallback onTap;
 
   @override
@@ -111,18 +170,18 @@ class _ProfilePill extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         customBorder: const StadiumBorder(),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           child: Row(
             children: [
-              Icon(Icons.person, size: 18, color: _ink),
-              SizedBox(width: 6),
+              const Icon(Icons.person, size: 18, color: _ink),
+              const SizedBox(width: 6),
               Text(
                 'PROFILE',
-                style: TextStyle(
+                style: GoogleFonts.dancingScript(
+                  fontSize: 23,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 1.1,
-                  color: _ink,
+                  color: _textPink,
                 ),
               ),
             ],
@@ -134,187 +193,73 @@ class _ProfilePill extends StatelessWidget {
 }
 
 class _AvatarHero extends StatelessWidget {
-  const _AvatarHero({required this.onTap});
+  const _AvatarHero({
+    required this.avatar,
+    required this.onTap,
+  });
+
+  final AvatarPreviewData avatar;
   final VoidCallback onTap;
+
+  Widget _layer(String? path) {
+    if (path == null) return const SizedBox.shrink();
+
+    return Positioned.fill(
+      child: Image.asset(
+        path,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: 280,
-            height: 280,
-            decoration: BoxDecoration(
-              color: Colors.black12.withAlpha((0.05 * 255).round()),
-              shape: BoxShape.circle,
+      child: SizedBox(
+        width: double.infinity,
+        height: 255,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                color: Colors.black12.withAlpha(13),
+                shape: BoxShape.circle,
+              ),
             ),
-          ),
-          Container(
-            width: 210,
-            height: 210,
-            decoration: BoxDecoration(
-              color: Colors.black12.withAlpha((0.12 * 255).round()),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: const Icon(Icons.image, size: 72, color: _muted),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatsAndMessageCard extends StatelessWidget {
-  const _StatsAndMessageCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(_g),
-      decoration: BoxDecoration(
-        color: _mint,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.black12, width: 1),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '“INSPIRATIONAL MESSAGE”',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 1.0,
-                    color: _ink,
-                  ),
+            Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                color: Colors.black12.withAlpha(18),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _layer(avatar.hairBack),
+                    _layer(avatar.baseBody),
+                    _layer(avatar.eyes),
+                    _layer(avatar.brows),
+                    _layer(avatar.lashes),
+                    _layer(avatar.mouth),
+                    _layer(avatar.dress),
+                    _layer(avatar.top),
+                    _layer(avatar.bottom),
+                    _layer(avatar.shoes),
+                    _layer(avatar.gloves),
+                    _layer(avatar.beard),
+                    _layer(avatar.hairFront),
+                    _layer(avatar.bangs),
+                  ],
                 ),
-                SizedBox(height: 12),
-                _StatLine(label: '• STAT'),
-                SizedBox(height: 8),
-                _StatLine(label: '• STAT'),
-                SizedBox(height: 8),
-                _StatLine(label: '• STAT'),
-              ],
-            ),
-          ),
-          SizedBox(width: _g),
-          _CircleChartPlaceholder(),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatLine extends StatelessWidget {
-  const _StatLine({required this.label});
-  final String label;
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      label,
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-        color: _ink,
-      ),
-    );
-  }
-}
-
-class _CircleChartPlaceholder extends StatelessWidget {
-  const _CircleChartPlaceholder();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 128,
-      height: 128,
-      decoration: BoxDecoration(
-        color: _panel,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.black12, width: 1),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          'CHART',
-          style: TextStyle(
-            color: _muted.withAlpha((0.9 * 255).round()),
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.0,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BottomRoundNav extends StatelessWidget {
-  const _BottomRoundNav({
-    required this.onHome,
-    required this.onAvatar,
-    required this.onGoals,
-    required this.onStats,
-    required this.onStore,
-    required this.onStreaks,
-  });
-
-  final VoidCallback onHome;
-  final VoidCallback onAvatar; // 2nd
-  final VoidCallback onGoals; // 3rd
-  final VoidCallback onStats; // 4th
-  final VoidCallback onStore; // 5th
-  final VoidCallback onStreaks; // 6th
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: const BoxDecoration(
-        color: _accent,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: _g),
-        child: Row(
-          children: const [
-            _NavDot(
-              icon: Icons.home_rounded,
-              semantic: 'Home',
-              withAction: true,
-            ),
-            _NavDot(
-              icon: Icons.emoji_emotions_rounded,
-              semantic: 'Avatar',
-              withAction: true,
-            ),
-            _NavDot(
-              icon: Icons.flag_rounded,
-              semantic: 'Goals',
-              withAction: true,
-            ),
-            _NavDot(
-              icon: Icons.bar_chart_rounded,
-              semantic: 'Stats',
-              withAction: true,
-            ),
-            _NavDot(
-              icon: Icons.storefront_rounded,
-              semantic: 'Store',
-              withAction: true,
-            ),
-            _NavDot(
-              icon: Icons.local_fire_department_rounded,
-              semantic: 'Streaks',
-              withAction: true,
+              ),
             ),
           ],
         ),
@@ -323,50 +268,155 @@ class _BottomRoundNav extends StatelessWidget {
   }
 }
 
-class _NavDot extends StatelessWidget {
-  const _NavDot({
-    required this.icon,
-    required this.semantic,
-    this.withAction = false,
+class _StatsAndMessageCard extends StatelessWidget {
+  const _StatsAndMessageCard({
+    required this.quote,
+    required this.coins,
   });
-  final IconData icon;
-  final String semantic;
-  final bool withAction;
+
+  final String quote;
+  final int coins;
 
   @override
   Widget build(BuildContext context) {
-    VoidCallback action = () {};
-    switch (semantic) {
-      case 'Home':
-        action = () =>
-            Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
-      case 'Avatar':
-        action = () => Navigator.pushNamed(context, '/avatar');
-      case 'Goals':
-        action = () => Navigator.pushNamed(context, '/goalmaker');
-      case 'Stats':
-        action = () {};
-      case 'Store':
-        action = () {};
-      case 'Streaks':
-        action = () {};
-    }
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+      decoration: BoxDecoration(
+        color: _greenCard,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Colors.black54, width: 1.2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            quote,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.dancingScript(
+              fontSize: 27,
+              height: 1.2,
+              fontWeight: FontWeight.w700,
+              color: _textPink,
+            ),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 20),
+          _StatRow(
+            label: 'Streak Count :\nDay 1/7',
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.star_rounded, color: _gold, size: 28),
+                SizedBox(width: 8),
+                Text(
+                  'Good Job!',
+                  style: TextStyle(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    color: _textPink,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Icon(Icons.star_rounded, color: _gold, size: 28),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          _StatRow(
+            label: 'Currency Count : $coins coins 💵',
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Semantics(
-        label: semantic,
-        button: true,
-        child: InkResponse(
-          onTap: withAction ? action : null,
-          radius: 28,
-          child: CircleAvatar(
-            radius: 22,
-            backgroundColor: Colors.white.withAlpha((0.85 * 255).round()),
-            child: Icon(icon, color: _ink),
+class _StatRow extends StatelessWidget {
+  const _StatRow({
+    required this.label,
+    this.trailing,
+  });
+
+  final String label;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: GoogleFonts.dancingScript(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: _textPink,
+            ),
+          ),
+        ),
+        if (trailing != null) ...[
+          const SizedBox(width: 10),
+          Flexible(child: trailing!),
+        ],
+      ],
+    );
+  }
+}
+
+class _CircleChartSection extends StatelessWidget {
+  const _CircleChartSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 175,
+        height: 175,
+        decoration: BoxDecoration(
+          color: _panel,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.black87, width: 1.5),
+        ),
+        child: CustomPaint(
+          painter: _PieChartPainter(),
+          child: Center(
+            child: Text(
+              'CHART',
+              style: GoogleFonts.dancingScript(
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                color: _textPink,
+              ),
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+class _PieChartPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 18
+      ..strokeCap = StrokeCap.round;
+
+    stroke.color = const Color(0xFFF3B6C4).withAlpha(210);
+    canvas.drawArc(rect.deflate(20), -1.4, 1.7, false, stroke);
+
+    stroke.color = const Color(0xFFBFE1D7).withAlpha(230);
+    canvas.drawArc(rect.deflate(20), 0.4, 2.0, false, stroke);
+
+    stroke.color = const Color(0xFFF6D66B).withAlpha(230);
+    canvas.drawArc(rect.deflate(20), 2.7, 1.1, false, stroke);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

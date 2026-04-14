@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/avatar_preview_store.dart';
 import '../widgets/mobile_layout.dart';
 
 const _phone = Colors.white;
@@ -38,25 +39,42 @@ class _AvatarUIState extends State<AvatarUI> {
     'shoes_1',
   };
 
-  final String _baseBody = 'avatar_assets/assets/body/1.png';
+  late String _baseBody;
 
-  String? _equippedHairFront = 'avatar_assets/assets/hair/1.png';
-  String? _equippedHairBack = 'avatar_assets/assets/hair_back/1.png';
-  String? _equippedBangs = 'avatar_assets/assets/bangs/1.png';
-  String? _equippedBrows = 'avatar_assets/assets/EYEBROWS/1.png';
-  String? _equippedLashes = 'avatar_assets/assets/EYELASHES/1.png';
-  String? _equippedEyes = 'avatar_assets/assets/PUPILS/1.png';
-  String? _equippedMouth = 'avatar_assets/assets/MOUTH/1.png';
+  String? _equippedHairFront;
+  String? _equippedHairBack;
+  String? _equippedBangs;
+  String? _equippedBrows;
+  String? _equippedLashes;
+  String? _equippedEyes;
+  String? _equippedMouth;
   String? _equippedBeard;
-  String? _equippedTop = 'avatar_assets/assets/top/1.png';
-  String? _equippedBottom = 'avatar_assets/assets/bottom/1.png';
+  String? _equippedTop;
+  String? _equippedBottom;
   String? _equippedDress;
   String? _equippedGloves;
-  String? _equippedShoes = 'avatar_assets/assets/shoes/1.png';
+  String? _equippedShoes;
 
   @override
   void initState() {
     super.initState();
+
+    final avatar = AvatarPreviewStore.instance.value;
+    _baseBody = avatar.baseBody;
+    _equippedHairFront = avatar.hairFront;
+    _equippedHairBack = avatar.hairBack;
+    _equippedBangs = avatar.bangs;
+    _equippedBrows = avatar.brows;
+    _equippedLashes = avatar.lashes;
+    _equippedEyes = avatar.eyes;
+    _equippedMouth = avatar.mouth;
+    _equippedBeard = avatar.beard;
+    _equippedTop = avatar.top;
+    _equippedBottom = avatar.bottom;
+    _equippedDress = avatar.dress;
+    _equippedGloves = avatar.gloves;
+    _equippedShoes = avatar.shoes;
+    _coins = AvatarPreviewStore.coins.value;
 
     _shopItems = {
       _AvatarCategory.hairFront: _buildItems(
@@ -146,6 +164,26 @@ class _AvatarUIState extends State<AvatarUI> {
     super.dispose();
   }
 
+  void _syncAvatarPreview() {
+    AvatarPreviewStore.instance.value = AvatarPreviewData(
+      baseBody: _baseBody,
+      hairFront: _equippedHairFront,
+      hairBack: _equippedHairBack,
+      bangs: _equippedBangs,
+      brows: _equippedBrows,
+      lashes: _equippedLashes,
+      eyes: _equippedEyes,
+      mouth: _equippedMouth,
+      beard: _equippedBeard,
+      top: _equippedTop,
+      bottom: _equippedBottom,
+      dress: _equippedDress,
+      gloves: _equippedGloves,
+      shoes: _equippedShoes,
+    );
+    AvatarPreviewStore.coins.value = _coins;
+  }
+
   List<_AvatarItem> _buildItems({
     required _AvatarCategory category,
     required String folder,
@@ -168,12 +206,10 @@ class _AvatarUIState extends State<AvatarUI> {
 
   void _scrollCategoriesLeft() {
     if (!_categoryScrollController.hasClients) return;
-
     final newOffset = (_categoryScrollController.offset - 180).clamp(
       0.0,
       _categoryScrollController.position.maxScrollExtent,
     );
-
     _categoryScrollController.animateTo(
       newOffset,
       duration: const Duration(milliseconds: 280),
@@ -183,12 +219,10 @@ class _AvatarUIState extends State<AvatarUI> {
 
   void _scrollCategoriesRight() {
     if (!_categoryScrollController.hasClients) return;
-
     final newOffset = (_categoryScrollController.offset + 180).clamp(
       0.0,
       _categoryScrollController.position.maxScrollExtent,
     );
-
     _categoryScrollController.animateTo(
       newOffset,
       duration: const Duration(milliseconds: 280),
@@ -333,6 +367,7 @@ class _AvatarUIState extends State<AvatarUI> {
           _equippedShoes = item.imagePath;
           break;
       }
+      _syncAvatarPreview();
     });
   }
 
@@ -379,6 +414,7 @@ class _AvatarUIState extends State<AvatarUI> {
           _equippedShoes = null;
           break;
       }
+      _syncAvatarPreview();
     });
   }
 
@@ -462,6 +498,7 @@ class _AvatarUIState extends State<AvatarUI> {
     setState(() {
       _coins -= item.price;
       _ownedItemIds.add(item.id);
+      AvatarPreviewStore.coins.value = _coins;
     });
 
     _equipItem(item);
@@ -518,7 +555,6 @@ class _AvatarUIState extends State<AvatarUI> {
       if (await _assetExists(baseCandidate)) {
         variants.add(baseCandidate);
       }
-
       const suffixes = ['b', 'c', 'd', 'e', 'f', 'g', 'h'];
       for (final suffix in suffixes) {
         final candidate =
@@ -528,11 +564,11 @@ class _AvatarUIState extends State<AvatarUI> {
         }
       }
     } else if (category == _AvatarCategory.dresses) {
-      final baseCandidate = 'avatar_assets/assets/dress/COLORS/$baseNumber.png';
+      final baseCandidate =
+          'avatar_assets/assets/dress/COLORS/$baseNumber.png';
       if (await _assetExists(baseCandidate)) {
         variants.add(baseCandidate);
       }
-
       const suffixes = ['b', 'c', 'd', 'e', 'f', 'g', 'h'];
       for (final suffix in suffixes) {
         final candidate =
@@ -614,6 +650,7 @@ class _AvatarUIState extends State<AvatarUI> {
 
     setState(() {
       _setEquippedPathForCategory(_selectedCategory, picked);
+      _syncAvatarPreview();
     });
   }
 
@@ -990,14 +1027,14 @@ class _ShopTile extends StatelessWidget {
               isEquipped
                   ? 'Equipped'
                   : isOwned
-                  ? 'Owned'
-                  : '💵 $price',
+                      ? 'Owned'
+                      : '💵 $price',
               style: TextStyle(
                 color: isEquipped
                     ? _ink
                     : isOwned
-                    ? _green
-                    : _muted,
+                        ? _green
+                        : _muted,
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
               ),
