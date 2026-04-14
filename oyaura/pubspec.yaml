@@ -26,3 +26,18 @@ flutter:
   assets:
     - assets/Oyaura_Logo.png
     - assets/avatars/
+
+    - avatar_assets/assets/body/
+    - avatar_assets/assets/hair/
+    - avatar_assets/assets/hair_back/
+    - avatar_assets/assets/bangs/
+    - avatar_assets/assets/EYEBROWS/
+    - avatar_assets/assets/EYELASHES/
+    - avatar_assets/assets/PUPILS/
+    - avatar_assets/assets/MOUTH/
+    - avatar_assets/assets/BEARD/
+    - avatar_assets/assets/top/
+    - avatar_assets/assets/bottom/
+    - avatar_assets/assets/dress/
+    - avatar_assets/assets/gloves/
+    - avatar_assets/assets/shoes/

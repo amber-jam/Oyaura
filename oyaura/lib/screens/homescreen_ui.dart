@@ -1,6 +1,6 @@
 import '../widgets/mobile_layout.dart';
 import 'package:flutter/material.dart';
-import '../widgets/custom_bottom_nav.dart'; // Adjust path as needed
+// Adjust path as needed
 
 const _bg = Color(0xFFF3F4F6);
 const _phoneShell = Colors.white;

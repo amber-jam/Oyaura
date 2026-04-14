@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 const _accent = Color(0xFFF4A3A3);
 const _muted = Color(0xFF7A8087);
 
-// Scrollable bottom navigation bar constrained for mobile views.
 class CustomBottomNavBar extends StatelessWidget {
   final String currentScreen;
 
@@ -14,6 +13,7 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> tabs = [
       {'name': 'home', 'icon': Icons.home_rounded, 'label': 'Home'},
+      {'name': 'avatar', 'icon': Icons.person_rounded, 'label': 'Avatar'},
       {'name': 'mood', 'icon': Icons.emoji_emotions_rounded, 'label': 'Mood'},
       {'name': 'journal', 'icon': Icons.book_rounded, 'label': 'Journal'},
       {
@@ -28,16 +28,17 @@ class CustomBottomNavBar extends StatelessWidget {
         'icon': Icons.leaderboard_rounded,
         'label': 'Rank',
       },
-      {'name': 'avatar', 'icon': Icons.person_rounded, 'label': 'Avatar'},
     ];
 
     return SafeArea(
       child: LayoutBuilder(
         builder: (context, constraints) {
-          double containerWidth = constraints.maxWidth > 450
+          final double containerWidth = constraints.maxWidth > 450
               ? 450
               : constraints.maxWidth;
-          double tabWidth = containerWidth / 4;
+
+          // Show 5 tabs at a time instead of 4
+          final double tabWidth = containerWidth / 5;
 
           return Container(
             height: 85,
@@ -54,10 +55,12 @@ class CustomBottomNavBar extends StatelessWidget {
                 ),
               ],
             ),
-            // Allows mouse dragging on web browsers
             child: ScrollConfiguration(
               behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                },
               ),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -106,7 +109,7 @@ class _NavDot extends StatelessWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
         padding: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
@@ -118,15 +121,16 @@ class _NavDot extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: isSelected ? _accent : _muted, size: 26),
+            Icon(icon, color: isSelected ? _accent : _muted, size: 24),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 color: isSelected ? _accent : _muted,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
